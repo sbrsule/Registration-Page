@@ -79,12 +79,20 @@ h2 {
 
 .form button {
     cursor: pointer;
-    background-color: #3498db;
-    border: 2px solid #3498db;
+    background-color: darkgrey;
+    border-color: darkgrey;
+    border: 2px solid;
     color: #fff;
     display: block;
     font-size: 16px;
     padding: 10px;
     margin-top: 20px;
     width: 100%;
+    transition: all 0.3s ease;
+}
+
+.form button:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+    transition: all 0.3s ease;
 }

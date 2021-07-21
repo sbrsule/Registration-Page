@@ -2,14 +2,15 @@ const usernameField = document.querySelector('#username');
 const emailField = document.querySelector('#email');
 const passwordField1 = document.querySelector('#password');
 const passwordField2 = document.querySelector('#password2');
-const submitButton = document.querySelector('#username');
+const submitButton = document.querySelector('#submitButton');
 const form = document.querySelector('#form');
 
-function showError(field, fieldName) {
+
+function showError(field, errorString) {
     let formControl = field.parentElement;
     formControl.className = 'form-control error';
     let small = formControl.querySelector('small');
-    small.innerText = fieldName + " is required"
+    small.innerText = errorString
 }
 
 function showSuccess(field) {
@@ -17,36 +18,61 @@ function showSuccess(field) {
     formControl.className = 'form-control success';
 }
 
-function checkEmpty(field, fieldName) {
+function checkEmpty(field) {
     if (field.value === '') {
-        showError(field, fieldName);
+        return true;
     }
     else {
-        showSuccess(field);
+        return false;
+    }
+}
+
+function checkUsername(usernameField) {
+    if (checkEmpty(usernameField)) {
+        showError(usernameField, "Username is required");
+    }
+    else {
+        showSuccess(usernameField);
+    }
+}
+
+function checkEmail(emailField) {
+    let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (emailField.value === '') {
+        showError(emailField, "Email is required")
+    }
+    else if (re.test(String(emailField.value).toLowerCase())) {
+        showSuccess(emailField);
+    }
+    else {
+        showError(emailField, "Email is not valid");
     }
 }
 
 function checkPassword(passwordField1, passwordField2) {
-    if (passwordField1.value == passwordField2.value) {
-        checkEmpty(passwordField1, 'Password');
-        checkEmpty(passwordField2, 'Password');
+    if (checkEmpty(passwordField1) || checkEmpty(passwordField2)) {
+        if (checkEmpty(passwordField1)) {
+            showError(passwordField1, "Password is required");
+        }
+        if (checkEmpty(passwordField2)) {
+            showError(passwordField2, "Password Confirmation is required");
+        }
+        return; 
+    }
+    else if (passwordField1.value === passwordField2.value) {
+        showSuccess(passwordField1);
+        showSuccess(passwordField2);
     }
     else {
-        let formControl1 = passwordField1.parentElement;
-        let formControl2 = passwordField2.parentElement;
-        formControl1.className = 'form-control error';
-        formControl2.className = 'form-control error';
-        let small1 = formControl1.querySelector('small');
-        let small2 = formControl2.querySelector('small');
-        small1.innerText = 'Passwords must match';
-        small2.innerText = 'Passwords must match';
-
+        showError(passwordField1, "Passwords do not match");
+        showError(passwordField2, "Passwords do not match");
     }
 }
 
+
 form.addEventListener('submit', function(e) {
     e.preventDefault();
-    checkEmpty(usernameField, "Username");
-    checkEmpty(emailField, "Email");
+    checkUsername(usernameField, "Username");
+    checkEmail(emailField);
     checkPassword(passwordField1, passwordField2);
 })
